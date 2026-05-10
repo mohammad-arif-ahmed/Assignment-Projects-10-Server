@@ -35,9 +35,18 @@ async function run() {
         // collection
         const coursesCollection = database.collection("courses");
 
-        // test api
         app.get("/courses", async (req, res) => {
-            const result = await coursesCollection.find().toArray();
+
+            const category = req.query.category;
+
+            let query = {};
+
+            if (category) {
+                query.category = category;
+            }
+
+            const result = await coursesCollection.find(query).toArray();
+
             res.send(result);
         });
         app.post("/courses", async (req, res) => {
