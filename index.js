@@ -27,7 +27,7 @@ async function run() {
     try {
 
         // connect mongodb
-         await client.connect();
+        await client.connect();
 
         // database
         const database = client.db("onlineLearningDB");
@@ -40,7 +40,15 @@ async function run() {
             const result = await coursesCollection.find().toArray();
             res.send(result);
         });
-        
+        app.post("/courses", async (req, res) => {
+
+            const newCourse = req.body;
+
+            const result = await coursesCollection.insertOne(newCourse);
+
+            res.send(result);
+        });
+
 
         // ping
         await client.db("admin").command({ ping: 1 });
