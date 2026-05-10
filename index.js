@@ -27,7 +27,7 @@ async function run() {
     try {
 
         // connect mongodb
-        // await client.connect();
+         await client.connect();
 
         // database
         const database = client.db("onlineLearningDB");
@@ -40,18 +40,7 @@ async function run() {
             const result = await coursesCollection.find().toArray();
             res.send(result);
         });
-        app.get("/add-test", async (req, res) => {
-
-            const testData = {
-                title: "React Course",
-                instructor: "Arif",
-                price: 499,
-            };
-
-            const result = await coursesCollection.insertOne(testData);
-
-            res.send(result);
-        });
+        
 
         // ping
         await client.db("admin").command({ ping: 1 });
