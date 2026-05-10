@@ -34,15 +34,24 @@ async function run() {
 
         // collection
         const coursesCollection = database.collection("courses");
+        const enrolledCollection = database.collection("enrolledCourses");
 
         app.get("/courses", async (req, res) => {
 
             const category = req.query.category;
+            const search = req.query.search;
 
             let query = {};
 
             if (category) {
                 query.category = category;
+            }
+
+            if (search) {
+                query.title = {
+                    $regex: search,
+                    $options: "i",
+                };
             }
 
             const result = await coursesCollection.find(query).toArray();
@@ -54,6 +63,16 @@ async function run() {
             const newCourse = req.body;
 
             const result = await coursesCollection.insertOne(newCourse);
+
+            res.send(result);
+        });
+        app.get("/courses/:id", async (req, res) => {
+
+            const id = req.params.id;
+
+            const query = { _id: new ObjectId(id) };
+
+            const result = await coursesCollection.findOne(query);
 
             res.send(result);
         });
@@ -80,6 +99,39 @@ async function run() {
 
             res.send(result);
         });
+        app.get("/featured-courses", async (req, res) => {
+
+            const query = {
+                isFeatured: true,
+            };
+
+            const result = await coursesCollection
+                .find(query)
+                .limit(6)
+                .toArray();
+
+            res.send(result);
+        });
+        app.post("/enroll", async (req, res) => {
+
+            const enrolledData = req.body;
+
+            const result = await enrolledCollection.insertOne(enrolledData);
+
+            res.send(result);
+        });
+        app.get("/my-enrolled-courses", async (req, res) => {
+
+            const email = req.query.email;
+
+            const query = {
+                studentEmail: email,
+            };
+
+            const result = await enrolledCollection.find(query).toArray();
+
+            res.send(result);
+        });
 
 
         // ping
@@ -96,6 +148,7 @@ run().catch(console.dir);
 app.get("/", (req, res) => {
     res.send("Online Learning Server Running");
 });
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
