@@ -27,7 +27,7 @@ async function run() {
     try {
 
         // connect mongodb
-        await client.connect();
+       // await client.connect();
 
         // database
         const database = client.db("onlineLearningDB");
