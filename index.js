@@ -8,7 +8,10 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // middleware
-app.use(cors());
+//app.use(cors());
+app.use(cors({
+    origin: "*"
+}));
 app.use(express.json());
 
 // mongodb uri
@@ -27,7 +30,7 @@ async function run() {
     try {
 
         // connect mongodb
-       // await client.connect();
+        // await client.connect();
 
         // database
         const database = client.db("onlineLearningDB");
