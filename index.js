@@ -90,6 +90,34 @@ async function run() {
 
             res.send(result);
         });
+        app.put("/courses/:id", async (req, res) => {
+
+            const id = req.params.id;
+
+            const updatedCourse = req.body;
+
+            const query = {
+                _id: new ObjectId(id),
+            };
+
+            const updatedDoc = {
+                $set: {
+                    title: updatedCourse.title,
+                    image: updatedCourse.image,
+                    price: updatedCourse.price,
+                    duration: updatedCourse.duration,
+                    category: updatedCourse.category,
+                    description: updatedCourse.description,
+                }
+            };
+
+            const result = await coursesCollection.updateOne(
+                query,
+                updatedDoc
+            );
+
+            res.send(result);
+        });
         app.get("/my-courses", async (req, res) => {
 
             const email = req.query.email;
